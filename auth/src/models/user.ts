@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Password } from "../services/password";
 
 /**
  * An interface that describes the properties
@@ -37,6 +38,14 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+userSchema.pre("save", async function (done) {
+  if (this.isModified("password")) {
+    const hashed = await Password.toHash(this.get("password"));
+    this.set("password", hashed);
+  }
+  done();
+});
+
 // this is how we declare custom function built into a model we adding statics property to our schema
 userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);
@@ -51,6 +60,5 @@ const buildUser = (attrs: UserAttrs) => {
 
 export { User, buildUser };
 */
-
 
 export { User };

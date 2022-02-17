@@ -45,14 +45,14 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      "private-key"
+      process.env.JWT_KEY! // "!" implies that we know exactly the type of JWT_KEY and it's verified
     );
 
     // Store it on session object
     req.session = {
       jwt: userJWT,
     };
-    
+
     res.status(200).send(user);
   }
 );

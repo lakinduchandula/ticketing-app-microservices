@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { transform } from "typescript";
 import { Password } from "../services/password";
 
 /**

@@ -1,12 +1,18 @@
-import { useState } from "react"; // this is for keep track what user-input using inputs in form
+import { useState } from 'react'; // this is for keep track what user-input using inputs in form
+import axios from 'axios';
 
 export default () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const onSubmit = event => {
+  const onSubmit = async event => {
     event.preventDefault(); // to prevent form it-self try submit to the browser
-    console.log(email, password);
+    const response = await axios.post('/api/users/signup', {
+      email,
+      password,
+    });
+
+    console.log(response.data);
   };
 
   return (

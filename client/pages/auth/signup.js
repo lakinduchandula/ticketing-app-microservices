@@ -4,15 +4,21 @@ import axios from 'axios';
 export default () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState([]);
 
   const onSubmit = async event => {
     event.preventDefault(); // to prevent form it-self try submit to the browser
-    const response = await axios.post('/api/users/signup', {
-      email,
-      password,
-    });
 
-    console.log(response.data);
+    try {
+      const response = await axios.post('/api/users/signup', {
+        email,
+        password,
+      });
+      console.log(response.data);
+    } catch (err) {
+      console.error(err.response.data);
+      setErrors(err.response.data.errors);
+    }
   };
 
   return (
@@ -37,6 +43,16 @@ export default () => {
             onChange={e => setPassword(e.target.value)}
           ></input>
         </div>
+        {errors.length > 0 && ( // if there is errors in errors array then this div will show
+          <div className="alert alert-danger mt-2">
+            <h4>Ooops...</h4>
+            <ul className="my-0">
+              {errors.map(error => {
+                return <li key={error.message}>{error.message}</li>;
+              })}
+            </ul>
+          </div>
+        )}
         <button type="submit" className="btn btn-primary mt-2">
           Sign Up
         </button>

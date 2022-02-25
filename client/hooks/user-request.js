@@ -1,13 +1,19 @@
 import axios from 'axios';
 import { useState } from 'react';
 
-export default ({ url, method, body }) => {
+export default ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
 
   const doRequest = async () => {
     try {
       setErrors(null);
       const response = await axios[method](url, body);
+
+      // this will only run when response is sucess
+      if (onSuccess) {
+        onSuccess(response.data); // callback func
+      }
+
       return response.data;
     } catch (err) {
       setErrors(
@@ -20,6 +26,8 @@ export default ({ url, method, body }) => {
           </ul>
         </div>
       );
+      // thorw error at this line will be logged in console in the browser
+      // throw err;
     }
   };
 

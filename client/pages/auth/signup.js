@@ -1,5 +1,5 @@
 import { useState } from 'react'; // this is for keep track what user-input using inputs in form
-
+import Router from 'next/router';
 import useRequest from '../../hooks/user-request';
 
 export default () => {
@@ -12,12 +12,13 @@ export default () => {
       email,
       password,
     },
+    onSuccess: () => Router.push('/'),
   });
 
   const onSubmit = async event => {
     event.preventDefault(); // to prevent form it-self try submit to the browser
 
-    doRequest();
+    await doRequest();
   };
 
   return (

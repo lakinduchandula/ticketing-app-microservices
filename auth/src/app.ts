@@ -8,8 +8,7 @@ import { currentUserRouter } from "./routes/current-user";
 import { signUpUserRouter } from "./routes/signup";
 import { signInUserRouter } from "./routes/signin";
 import { signOutUserRouter } from "./routes/signout";
-import { errorHandler } from "./middlewares/error-handler";
-import { NotFoundError } from "./errors/not-found-error";
+import { errorHandler, NotFoundError } from "@lc-tickets/common";
 
 const app = express();
 

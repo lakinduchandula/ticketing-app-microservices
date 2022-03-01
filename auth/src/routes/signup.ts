@@ -1,22 +1,21 @@
-import express, { Request, Response } from "express";
-import { body } from "express-validator";
-import jwt from "jsonwebtoken";
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+import jwt from 'jsonwebtoken';
 
-import { User } from "../models/user";
-import { BadRequestError } from "../errors/bad-request-error";
-import { validateRequest } from "../middlewares/validate-request";
+import { User } from '../models/user';
+import { BadRequestError, validateRequest } from '@lc-tickets/common';
 
 const router = express.Router();
 
 // stage-1 post signup handler
 router.post(
-  "/api/users/signup",
+  '/api/users/signup',
   [
-    body("email").isEmail().withMessage("Email must be valid"),
-    body("password")
+    body('email').isEmail().withMessage('Email must be valid'),
+    body('password')
       .trim()
       .isLength({ min: 4, max: 20 })
-      .withMessage("Password must be length between 4 and 20 characters"),
+      .withMessage('Password must be length between 4 and 20 characters'),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -28,7 +27,7 @@ router.post(
       // console.log("Email in use");
       // return res.send({});
 
-      throw new BadRequestError("Email is already in use");
+      throw new BadRequestError('Email is already in use');
     }
 
     const user = User.build({ email, password });

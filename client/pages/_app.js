@@ -7,7 +7,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
       <Header currentUser={currentUser}></Header>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </div>
   );
 };
@@ -25,3 +25,5 @@ AppComponent.getInitialProps = async appContext => {
 };
 
 export default AppComponent;
+
+// Start with lecture 05

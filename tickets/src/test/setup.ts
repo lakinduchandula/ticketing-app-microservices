@@ -1,17 +1,18 @@
-import request from "supertest";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import mongoose from "mongoose";
-import { app } from "../app";
+import request from 'supertest';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
+import { app } from '../app';
+import jwt from 'jsonwebtoken';
 
 declare global {
-  var signin: () => Promise<string[]>;
+  var signin: () => string[];
 }
 
 let mongo: any;
 
 // this hook will run before all tests
 beforeAll(async () => {
-  process.env.JWT_KEY = "private key";
+  process.env.JWT_KEY = 'private key';
   mongo = await MongoMemoryServer.create();
   const mongoURI = mongo.getUri();
 
@@ -38,16 +39,25 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-global.signin = async () => {
-  const email = "test@example.com";
-  const password = "password";
+global.signin = () => {
+  // build a JWT payload { id, email }
+  const payload = {
+    id: 'GUpLMY6fLOCA6Cg',
+    email: 'lakindu@test.com',
+  };
 
-  const response = await request(app)
-    .post("/api/users/signup")
-    .send({ email, password })
-    .expect(201);
+  // create the JWT!
+  const token = jwt.sign(payload, process.env.JWT_KEY!);
 
-  const cookie = response.get("Set-Cookie");
+  // Build session Object. {jwt: MY_JWT}
+  const session = { jwt: token };
 
-  return cookie;
+  // Turn that session into JSON
+  const sessionJSON = JSON.stringify(session);
+
+  // Take JSON and encode it as based64
+  const base64 = Buffer.from(sessionJSON).toString('base64');
+
+  // return a string thats the cookie with the encoded data
+  return [`session=${base64}`];
 };

@@ -35,6 +35,50 @@ it('returns 401 if the user does not won the ticket', async () => {
     .expect(401);
 });
 
-it('returns a 400 if the user provides invalid title or price', async () => {});
+it('returns a 400 if the user provides invalid title or price', async () => {
+  const cookie = global.signin();
 
-it('updates the ticket provided an invalid title or price', async () => {});
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'ngkJghLPh3gF7GL',
+      price: 10.75,
+    });
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'zOPMxEajq6uHz62',
+      price: -20.75,
+    })
+    .expect(400);
+});
+
+it('updates the ticket provided an invalid title or price', async () => {
+  const cookie = global.signin();
+
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', cookie)
+    .send({
+      title: 'ngkJghLPh3gF7GL',
+      price: 10.75,
+    });
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'tdwQOA3ffwmU2Jm',
+      price: 100.0,
+    })
+    .expect(200);
+
+  const ticketResponse = await request(app)
+    .get(`/api/tickets/${response.body.id}`)
+    .send();
+
+  expect(ticketResponse.body.title).toEqual('tdwQOA3ffwmU2Jm');
+});

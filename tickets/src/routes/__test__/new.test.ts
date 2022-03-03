@@ -1,12 +1,11 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { Ticket } from '../../models/ticket';
 
 it('has a route handler listening to /api/tickets for post requests', async () => {
   const response = await request(app).post('/api/tickets').send({});
   expect(response.status).not.toEqual(404);
 });
-
-it('can only be accessed if the user is signed in', async () => {});
 
 it('returns an error if an invalid title is provided', async () => {
   await request(app)
@@ -33,9 +32,23 @@ it('returns an error if an invalid price is provided', async () => {
     .post('/api/tickets')
     .set('Cookie', global.signin())
     .send({
-     title: 'TbGt5yPKVw9TOjQ',
+      title: 'TbGt5yPKVw9TOjQ',
     })
     .expect(400);
 });
 
-it('creates a tickets with valid inputs', async () => {});
+it('creates a tickets with valid inputs', async () => {
+  // add in a check to make ste a ticket was saved
+  let tickets = await Ticket.find({});
+  expect(tickets.length).toEqual(0);
+
+  await request(app)
+    .post('/api/tickets')
+    .set('Cookie', global.signin())
+    .send({ title: 'ngkJghLPh3gF7GL', price: 10.0 })
+    .expect(201);
+
+  tickets = await Ticket.find({});
+  expect(tickets.length).toEqual(1);
+  expect(tickets[0].price).toEqual(10.0);
+});

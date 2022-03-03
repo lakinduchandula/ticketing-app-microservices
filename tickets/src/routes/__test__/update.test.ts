@@ -19,7 +19,21 @@ it('returns a 401 if the user is not authenticated', async () => {
     .expect(401);
 });
 
-it('returns 401 if the user does not won the ticket', async () => {});
+it('returns 401 if the user does not won the ticket', async () => {
+  const response = await request(app)
+    .post('/api/tickets')
+    .set('Cookie', global.signin())
+    .send({
+      title: 'ngkJghLPh3gF7GL',
+      price: 10.75,
+    });
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set('Cookie', global.signin())
+    .send({ title: 'ngkJghLPh3gF7GL', price: 15.0 })
+    .expect(401);
+});
 
 it('returns a 400 if the user provides invalid title or price', async () => {});
 

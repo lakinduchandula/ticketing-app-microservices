@@ -15,7 +15,11 @@ stan.on('connect', () => {
     process.exit();
   });
 
-  const options = stan.subscriptionOptions().setManualAckMode(true);
+  const options = stan
+    .subscriptionOptions()
+    .setManualAckMode(true)
+    .setDeliverAllAvailable()
+    .setDurableName('accounting-service');
   /**
    * Queue group is created to make-sure that Multiple instances in the same service
    * are not all going to receive the exact same event

@@ -15,30 +15,7 @@ stan.on('connect', () => {
     process.exit();
   });
 
-  const options = stan
-    .subscriptionOptions()
-    .setManualAckMode(true)
-    .setDeliverAllAvailable()
-    .setDurableName('accounting-service');
-  /**
-   * Queue group is created to make-sure that Multiple instances in the same service
-   * are not all going to receive the exact same event
-   */
-  const subscription = stan.subscribe(
-    'ticket:created',
-    'order-service-queue-group',
-    options
-  );
-
-  subscription.on('message', (msg: Message) => {
-    const data = msg.getData();
-
-    if (typeof data === 'string') {
-      console.log(`Received event #${msg.getSequence()}, with data: ${data}`);
-    }
-
-    msg.ack();
-  });
+  new TicketCreatedListener(stan).listen();
 });
 
 /**
@@ -98,5 +75,16 @@ abstract class Listener {
     return typeof data === 'string'
       ? JSON.parse(data)
       : JSON.parse(data.toString('utf8'));
+  }
+}
+
+class TicketCreatedListener extends Listener {
+  subject = 'ticket:created';
+  queueGroupName = 'payment-service';
+
+  onMessage(data: any, msg: Message) {
+    console.log('Evenet data!', data);
+
+    msg.ack(); // this indicates that msg successfully having parsed
   }
 }

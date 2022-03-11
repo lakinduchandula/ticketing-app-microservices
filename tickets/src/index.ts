@@ -19,6 +19,22 @@ const start = async () => {
       'eSqBq3IQoxmCPh6',
       'http://nats-srv:4222'
     );
+
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed!');
+      process.exit();
+    });
+
+    process.on('SIGINT', () => {
+      // intercept
+      natsWrapper.client.close(); // call to close in line 13
+    });
+    
+    process.on('SIGTERM', () => {
+      // terminate
+      natsWrapper.client.close(); // call to close in line 13
+    });
+
     await mongoose.connect(process.env.MONGO_URI!, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

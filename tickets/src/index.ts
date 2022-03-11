@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import { app } from './app';
+import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
   // check before application start environment variables get defined correctly
@@ -13,6 +14,11 @@ const start = async () => {
   }
 
   try {
+    await natsWrapper.connect(
+      'ticketing',
+      'eSqBq3IQoxmCPh6',
+      'http://nats-srv:4222'
+    );
     await mongoose.connect(process.env.MONGO_URI!, {
       useNewUrlParser: true,
       useUnifiedTopology: true,

@@ -13,11 +13,23 @@ const start = async () => {
     throw new Error('MONGO_URI is not defined');
   }
 
+  if (!process.env.NATS_URL) {
+    throw new Error('NATS_URL is not defined');
+  }
+
+  if (!process.env.NATS_CLIENT_ID) {
+    throw new Error('NATS_CLIENT_ID is not defined');
+  }
+
+  if (!process.env.NATS_CLUSTER_ID) {
+    throw new Error('NATS_CLUSTER_ID is not defined');
+  }
+
   try {
     await natsWrapper.connect(
-      'ticketing',
-      'eSqBq3IQoxmCPh6',
-      'http://nats-srv:4222'
+      process.env.NATS_CLUSTER_ID,
+      process.env.NATS_CLIENT_ID,
+      process.env.NATS_URL
     );
 
     natsWrapper.client.on('close', () => {
@@ -29,7 +41,7 @@ const start = async () => {
       // intercept
       natsWrapper.client.close(); // call to close in line 13
     });
-    
+
     process.on('SIGTERM', () => {
       // terminate
       natsWrapper.client.close(); // call to close in line 13

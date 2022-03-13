@@ -14,6 +14,7 @@ let mongo: any;
 
 // this hook will run before all tests
 beforeAll(async () => {
+  jest.clearAllMocks();
   process.env.JWT_KEY = 'private key';
   mongo = await MongoMemoryServer.create();
   const mongoURI = mongo.getUri();

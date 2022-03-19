@@ -12,6 +12,7 @@ let mongo: any;
 
 // this hook will run before all tests
 beforeAll(async () => {
+  // jest.setTimeout(90 * 1000);
   jest.clearAllMocks();
   process.env.JWT_KEY = 'private key';
   mongo = await MongoMemoryServer.create();
@@ -36,6 +37,7 @@ beforeEach(async () => {
 
 // this will run afterAll tests
 afterAll(async () => {
+  // jest.setTimeout(5 * 1000);
   await mongoose.connection.close();
   await mongo.stop();
 });

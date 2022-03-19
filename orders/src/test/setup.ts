@@ -36,8 +36,8 @@ beforeEach(async () => {
 
 // this will run afterAll tests
 afterAll(async () => {
-  await mongo.stop();
   await mongoose.connection.close();
+  await mongo.stop();
 });
 
 global.signin = () => {

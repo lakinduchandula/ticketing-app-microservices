@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import { Order, OrderStatus } from './order';
 
 interface TicketAttrs {
+  id: string;
   title: string;
   price: number;
 }
@@ -40,7 +41,11 @@ const ticketSchema = new mongoose.Schema(
 );
 
 ticketSchema.statics.build = (attrs: TicketAttrs) => {
-  return new Ticket(attrs);
+  return new Ticket({
+    _id: attrs.id,
+    title: attrs.title,
+    price: attrs.price,
+  });
 };
 
 ticketSchema.methods.isReserved = async function () {
@@ -49,7 +54,7 @@ ticketSchema.methods.isReserved = async function () {
    */
 
   const existingOrder = await Order.findOne({
-    ticket: this,
+    ticket: this as any,
     status: {
       $in: [
         OrderStatus.Created,
@@ -61,7 +66,7 @@ ticketSchema.methods.isReserved = async function () {
 
   /**
    * "!!" means that if existingOrder is null then it it means
-   * FALSE first ! will turn that into TRUE second ! will again 
+   * FALSE first ! will turn that into TRUE second ! will again
    * turn back to FALSE
    */
   return !!existingOrder;

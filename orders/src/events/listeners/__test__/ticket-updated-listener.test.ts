@@ -50,4 +50,10 @@ it('finds, updates and saves a ticket', async () => {
   expect(updatedTicket!.version).toEqual(data.version);
 });
 
-it('acks the message', async () => {});
+it('acks the message', async () => {
+  const { msg, data, ticket, listener } = await setup();
+
+  await listener.onMessage(data, msg);
+
+  expect(msg.ack).toHaveBeenCalled();
+});

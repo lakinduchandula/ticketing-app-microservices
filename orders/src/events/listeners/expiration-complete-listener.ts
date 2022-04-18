@@ -22,6 +22,8 @@ export class ExpirationCompleteListener extends Listener<ExpirationCompleteEvent
       throw new Error('Order not found');
     }
 
+    //! Now we saying that every time an expiration event receive ALWAYS setting order to
+    //! Cancelled, even if the payment is already paid...
     if (order.status === OrderStatus.Completed) {
       return msg.ack();
     }

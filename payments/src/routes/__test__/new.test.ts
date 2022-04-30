@@ -5,6 +5,7 @@ import { OrderStatus } from '@lc-tickets/common/build';
 import { app } from '../../app';
 import { stripe } from '../../stripe';
 import { Order } from '../../model/order';
+import { Payment } from '../../model/payment';
 
 it('returns a 404 when purchasing an order that does not exist', async () => {
   await request(app)
@@ -85,4 +86,10 @@ it('returns a 204 with valid inputes', async () => {
   });
 
   expect(stripeCharge).toBeDefined();
+
+  const payment = await Payment.findOne({
+    orderId: order.id,
+    stripeId: stripeCharge!.id,
+  });
+  expect(payment).not.toBeNull();
 });

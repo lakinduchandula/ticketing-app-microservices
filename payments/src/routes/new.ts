@@ -11,6 +11,7 @@ import {
 
 import { Order } from '../model/order';
 import { stripe } from '../stripe';
+import { Payment } from '../model/payment';
 
 const router = express.Router();
 
@@ -35,11 +36,17 @@ router.post(
       throw new BadRequestError('Cannot pay for an cancelled order');
     }
 
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
       currency: 'usd',
       amount: order.price * 100,
       source: token,
     });
+
+    const payment = Payment.build({
+      orderId,
+      stripeId: charge.id,
+    });
+    await payment.save();
 
     res.status(201).send({ success: true });
   }

@@ -1,15 +1,39 @@
+import { useState } from 'react';
+
 const NewTicket = () => {
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+
+  const onBlur = () => {
+    const value = parseFloat(price);
+
+    if (isNaN(value)) {
+      return;
+    }
+
+    setPrice(value.toFixed(2));
+  };
+
   return (
     <div>
       <h1>Create a Ticket</h1>
       <form>
         <div className="form-group">
           <label>Title</label>
-          <input className="form-control" />
+          <input
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+            className="form-control"
+          />
         </div>
         <div className="form-group">
           <label>Price</label>
-          <input className="form-control" />
+          <input
+            value={price}
+            onBlur={onBlur}
+            onChange={e => setPrice(e.target.value)}
+            className="form-control"
+          />
         </div>
         <button className="btn btn-primary mt-2">Submit</button>
       </form>
@@ -18,3 +42,8 @@ const NewTicket = () => {
 };
 
 export default NewTicket;
+
+/* NOTE
+ * onBlur : the blur event is triggered on an input any time user clicks into it and clicks out,
+ * specifically when user de-select an input
+ */

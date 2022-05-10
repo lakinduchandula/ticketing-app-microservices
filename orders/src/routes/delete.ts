@@ -13,7 +13,7 @@ const router = express.Router();
 router.delete(
   '/api/orders:orderId',
   requireAuth,
-  async (req, res) => async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     const { orderId } = req.params;
 
     /**
